@@ -1,0 +1,19 @@
+{
+  "name": "cloth-surface-gen-2d",
+  "authors": [
+    "Alexander Koumis <me@alexander.computer>"
+  ],
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "https://github.com/alexanderkoumis/cloth-surface-gen-2d",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
