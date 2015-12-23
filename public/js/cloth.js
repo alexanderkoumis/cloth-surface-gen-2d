@@ -7,7 +7,6 @@ class Cloth {
     this.lineWidth = lineWidth;
   }
 
-
   draw(context) {
     context.beginPath();
     context.strokeStyle="green"

@@ -2,12 +2,13 @@
 
 function main() {
 
-  const numPts = 50;
+  const numPts = 75;
   const ptRadius = 2;
-  const fillRatio = 0.6;
+  const minFillRatio = 0.3;
   const lineWidth = 2;
-  const blockDim = new THREE.Vector2(16, 16);
-  const moveVec = new THREE.Vector2(0, 5);
+  const ptSplitMultiple = 8;
+  const blockDim = new THREE.Vector2(32, 32);
+  const moveVec = new THREE.Vector2(0, 4);
 
   let canvas = document.getElementById('canvas');
   let image = document.getElementById('image');
@@ -17,12 +18,13 @@ function main() {
   const width = canvas.width;
   const height = canvas.height;
 
-  let points = Point.genInitPoints(numPts, width, height, ptRadius, fillRatio);
+  let points = Point.genInitPoints(numPts, width, height, ptRadius, moveVec,
+                                   minFillRatio);
   let cloth = new Cloth(points, lineWidth, moveVec);
   let grid = new Grid(context, width, height, blockDim);
 
   function render() {
-    points = Point.genNewPoints(points, grid, moveVec);
+    points = Point.genNewPoints(points, grid, ptSplitMultiple);
     cloth = new Cloth(points, lineWidth);
     grid = new Grid(context, width, height, blockDim);
 
@@ -30,7 +32,7 @@ function main() {
     context.drawImage(image, 0, 0);
     Point.draw(context, points);
     cloth.draw(context);
-    // grid.draw();
+    // grid.draw(context);
 
     window.requestAnimationFrame(render);
   }

@@ -76,7 +76,7 @@ class Grid {
     for (let gridY = 0; gridY < this.gridDim.y; ++gridY) {
       for (let gridX = 0; gridX < this.gridDim.x; ++gridX) {
         gridCoords.push({
-          idx: gridY * this.gridDim.y + gridX,
+          idx: gridY * this.gridDim.x + gridX,
           x: gridX * this.blockDim.x + offset.x,
           y: gridY * this.blockDim.y + offset.y
         });
