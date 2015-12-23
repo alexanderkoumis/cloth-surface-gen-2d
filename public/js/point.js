@@ -3,12 +3,13 @@
 
 class Point {
 
-  constructor(position, spacing, radius, moveVec, minFillRatio) {
+  constructor(position, spacing, radius, moveVec, minFillRatio, fromSplit) {
     this.position = position;
     this.spacing = spacing;
     this.radius = radius;
     this.moveVec = moveVec;
     this.minFillRatio = minFillRatio;
+    this.fromSplit = fromSplit;
   }
 
   calcNeighborDistances() {
@@ -35,7 +36,8 @@ class Point {
       this.spacing,
       this.radius,
       this.moveVec,
-      this.minFillRatio
+      this.minFillRatio,
+      false
     );
   }
 
@@ -63,7 +65,8 @@ class Point {
           this.spacing,
           this.radius,
           moveVec,
-          this.minFillRatio
+          this.minFillRatio,
+          true
         );
         splitPoints.push(splitPoint);
       }
@@ -100,7 +103,8 @@ class Point {
     const spacing = width / numPts;
     for (let i = 0; i < numPts; ++i) {
       let position = new THREE.Vector2(i * spacing, 5);
-      points.push(new Point(position, spacing, radius, moveVec, minFillRatio));
+      points.push(new Point(position, spacing, radius, moveVec, minFillRatio,
+                            false));
     }
     Point.setNeighbors(points);
     return points;
@@ -119,17 +123,16 @@ class Point {
       });
     };
     Point.setNeighbors(newPoints);
-    let biggest = 0;
     tempPointPairs.forEach(pointPair => {
       let oldPoint = points[pointPair.oldIdx];
       let newPoint = newPoints[pointPair.newIdx];
-      if (oldPoint && newPoint) {
+      if (oldPoint && newPoint && newPoint.fromSplit) {
         if (oldPoint.neighbors && newPoint.neighbors) {
           const oldAngle = oldPoint.neighbors.angle;
           const newAngle = newPoint.neighbors.angle;
           if ((oldAngle > 0.0 && newAngle < 0.0) ||
               (oldAngle < 0.0 && newAngle > 0.0)) {
-            newPoints.splice(pointPair.newIdx - 1, 2, newPoint);
+            newPoints.splice(pointPair.newIdx - 1, 3, newPoint);
           }
         }
       }

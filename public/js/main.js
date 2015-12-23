@@ -8,7 +8,7 @@ function main() {
   const lineWidth = 2;
   const ptSplitMultiple = 10;
   const blockDim = new THREE.Vector2(10, 10);
-  const moveVec = new THREE.Vector2(0, 10);
+  const moveVec = new THREE.Vector2(0, 5);
 
   let canvas = document.getElementById('canvas');
   let image = document.getElementById('image');
