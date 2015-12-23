@@ -2,13 +2,13 @@
 
 function main() {
 
-  const numPts = 75;
+  const numPts = 50;
   const ptRadius = 2;
   const minFillRatio = 0.3;
   const lineWidth = 2;
-  const ptSplitMultiple = 8;
-  const blockDim = new THREE.Vector2(32, 32);
-  const moveVec = new THREE.Vector2(0, 4);
+  const ptSplitMultiple = 10;
+  const blockDim = new THREE.Vector2(10, 10);
+  const moveVec = new THREE.Vector2(0, 10);
 
   let canvas = document.getElementById('canvas');
   let image = document.getElementById('image');

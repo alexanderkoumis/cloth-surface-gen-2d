@@ -1,6 +1,6 @@
 'use strict'
 
-var last = 0;
+
 class Point {
 
   constructor(position, spacing, radius, moveVec, minFillRatio) {
@@ -71,12 +71,26 @@ class Point {
     return splitPoints.reverse();
   }
 
+  static computeAngle(pointBack, pointCurr, pointFront) {
+    let back = pointBack.position;
+    let curr = pointCurr.position;
+    let front = pointFront.position;
+    const angle1 = Math.atan2(curr.y - back.y, curr.x - back.x);
+    const angle2 = Math.atan2(curr.y - front.y, curr.x - front.x);
+    return angle1 - angle2;
+  }
+
   static setNeighbors(points) {
     const numPoints = points.length;
     for (let i = 0; i < numPoints; ++i) {
+      const hasBack = i > 0;
+      const hasFront = i < (numPoints - 1); 
       points[i].neighbors = {
-        back : i > 0               ? points[i - 1] : null,
-        front: i < (numPoints - 1) ? points[i + 1] : null
+        back : hasBack  ? points[i - 1] : null,
+        front: hasFront ? points[i + 1] : null,
+        angle: (hasBack && hasFront) ? Point.computeAngle(points[i - 1],
+                                                          points[i    ],
+                                                          points[i + 1]) : 0.0
       }
     }
   }
@@ -94,13 +108,32 @@ class Point {
 
   static genNewPoints(points, grid, ptSplitMultiple) {
     let newPoints = [];
-    points.forEach(point => {
-      newPoints.push(point.genNewPoint(grid));
+    let tempPointPairs = [];
+    for (let i = 0; i < points.length; ++i) {
+      let point = points[i];
+      let newPoint = point.genNewPoint(grid);
+      newPoints.push(newPoint);
+      tempPointPairs.push({ oldIdx: i, newIdx: newPoints.length - 1 });
       point.genSplitPoints(ptSplitMultiple).forEach(splitPoint => {
         newPoints.push(splitPoint);
       });
+    };
+    Point.setNeighbors(newPoints);
+    let biggest = 0;
+    tempPointPairs.forEach(pointPair => {
+      let oldPoint = points[pointPair.oldIdx];
+      let newPoint = newPoints[pointPair.newIdx];
+      if (oldPoint && newPoint) {
+        if (oldPoint.neighbors && newPoint.neighbors) {
+          const oldAngle = oldPoint.neighbors.angle;
+          const newAngle = newPoint.neighbors.angle;
+          if ((oldAngle > 0.0 && newAngle < 0.0) ||
+              (oldAngle < 0.0 && newAngle > 0.0)) {
+            newPoints.splice(pointPair.newIdx - 1, 2, newPoint);
+          }
+        }
+      }
     });
-    last = newPoints.length;
     Point.setNeighbors(newPoints);
     return newPoints;
   }
